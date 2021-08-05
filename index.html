@@ -1,0 +1,32 @@
+<head>
+    <title>Java Simulator</title>
+    <meta charset="utf-8">
+    
+    <link rel="stylesheet" href="cm/lib/codemirror.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="cm/lib/codemirror.js"></script>
+    <script src="cm/addon/edit/matchbrackets.js"></script>
+    <script src="cm/mode/clike/clike.js"></script>
+</head>
+<body>
+    <h1>Java Sim</h1>
+    <div><textarea id="java-code">
+import not.supported
+       
+public class Main {
+    public static Object bestMethod(Object bestParameter){
+        return bestParameter;
+    }
+
+    public static void main(String[] args) {
+        Object hi = bestMethod(new String("Hello World"));
+        System.out.println(hi);
+    }
+}   </textarea>
+    </div>
+    <button id="run-button">&#187; Run</button>
+    <div><textarea id="output-code" class="output-code" readonly></textarea>
+
+    </div>
+    <script src="scripts/main.js"></script>
+</body>

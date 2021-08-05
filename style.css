@@ -1,0 +1,27 @@
+html {
+    background-color: #27292b;
+}
+.CodeMirror {
+    background-color: #85888a;
+    border: 2px inset #dee;
+}
+.CodeMirror-gutters {
+    background-color: rgb(109, 109, 109);
+}
+.CodeMirror-linenumber {
+    color: rgb(207, 207, 207);
+  }
+.cm-s-default .cm-variable-3, .cm-s-default .cm-type {color: rgb(0, 88, 56);}
+
+.output-code {
+    font-family: monospace;
+    height: 300px;
+    background-color: #333636;
+    color: white;
+    resize: none;
+    position: absolute;
+    width: 100%;
+    position: relative;
+    border-right: 50px solid transparent;
+    border: 2px inset #dee;
+}
