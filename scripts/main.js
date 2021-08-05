@@ -72,31 +72,61 @@ function fixToken(TokenArray) {
     return resArray;
 }
 
+function format(line) {
+    let formatingEq = /=/;
+    let formatingPlus = /\+/;
+    let formatingMin = /-/;
+    let formatingMult = /\*/;
+    let formatingDiv = /\//;
+    let formatingSpace = /\s\s/;
+    let res = line.replace(formatingEq, ' = ');
+    res = res.replace(formatingPlus, ' + ');
+    res = res.replace(formatingMin, ' - ');
+    res = res.replace(formatingMult, ' * ');
+    res = res.replace(formatingDiv, ' / ');
+    let resOld;
+    do {
+        resOld = res;
+        res = res.replace(formatingSpace, ' ');
+    } while (res !== resOld);
+    return res;
+}
 
 function findVars(lineArray) {
-    let def = /^int |^short |^long |^float |^double |^byte |^boolean |^char /;
+    let VarDef = /^int |^short |^long |^float |^double |^byte |^boolean |^char /;
     let temp = [];
+    restLines = []
     for (let i = 0; i < lineArray.length; i++) {
-        if (def.test(lineArray[i])){
-            addOut(lineArray[i]);
-            temp.push(lineArray[i]);
+        lineArray[i] = format(lineArray[i]);
+        if (VarDef.test(lineArray[i])){
+            temp.push(true);
+        } else {
+            temp.push(false);
         }
     }
-    for (let i = 0; i < temp.length; i++) {
-        temp[i] = temp[i].substring(0, temp[i].length - 1); // remove ";" from string
-        line = temp[i].toString().split(" "); // type, name, =, value
-        if (line.length == 4){  // if 5 or more it's not a varible declaration (new Object() isn't a primitive data type) " type c = a + b 
-            if (Object.is(NaN, Number(line[3]))) { // is line[3] NaN; true if so
-                let typeVal = varibles.get(line[3])     // case: type c = a 
-                if (typeVal != undefined){
-                    varibles.set(line[1], typeVal);
+    for (let i = 0; i < temp.length; i++) { //temp and lineArray have same lenght
+        if(temp[i]){
+            lineArray[i] = lineArray[i].substring(0, lineArray[i].length - 1); // remove ";" from string
+            line = lineArray[i].toString().split(" "); // type, name, =, value
+            if (line.length == 4){  // if 5 or more it's not a varible declaration (new Object() isn't a primitive data type) " e.g. type c = a + b; type c = a+b doesn't exist bc of formating
+                if (Object.is(NaN, Number(line[3]))) { // is line[3] NaN; true if so
+                    let typeVal = varibles.get(line[3])     // case: type c = a
+                    if (typeVal != undefined){
+                        varibles.set(line[1], typeVal);
+                    } else { //type c = [not defined variable]
+                        //ERROR, cancel execution if not defined
+                    }
+                } else {
+                    varibles.set(line[1], [line[0], line[3]]); // {key: name, value: [type, VarValue] }
                 }
             } else {
-                varibles.set(line[1], [line[0], line[3]]); // {key: name, value: [type, VarValue] }
-            }
+                restLines.push(lineArray[i]); // type c = a + b;
+            }   
+        } else {
+            restLines.push(lineArray[i]); // case: a = a + b or any other non variable assiging line
         }
-        
-    }
+    } 
+    return restLines;
 }
 
 function lines(){
@@ -112,7 +142,8 @@ function run() {
     clearOut();
     varibles.clear();
     lineArray = lines();
-    findVars(lineArray);
+    termLines = findVars(lineArray);
+    log(termLines);
     log(varibles);
 }
 
