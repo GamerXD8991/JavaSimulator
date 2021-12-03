@@ -11,6 +11,22 @@
 <body>
     <h1>Java Sim</h1>
     <div><textarea id="java-code">
+float a = 5.0;
+double b = 6.0;
+double c = (a+b)*b;
+ </textarea>
+    </div>
+    <div class="show-check">
+        <button id="run-button">&#187; Run</button>
+        <input type="checkbox" id="show-check"> <label>Infix und Reverse Polish Notation (RPN) anzeigen</label>
+    </div>
+    <div><textarea id="output-code" class="output-code" readonly></textarea>
+
+    </div>
+    <script src="scripts/main.js"></script>
+</body>
+
+        <!--
 import not.supported
        
 public class Main {
@@ -22,11 +38,4 @@ public class Main {
         Object hi = bestMethod(new String("Hello World"));
         System.out.println(hi);
     }
-}   </textarea>
-    </div>
-    <button id="run-button">&#187; Run</button>
-    <div><textarea id="output-code" class="output-code" readonly></textarea>
-
-    </div>
-    <script src="scripts/main.js"></script>
-</body>
+}-->  

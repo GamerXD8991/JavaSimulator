@@ -13,6 +13,11 @@ html {
   }
 .cm-s-default .cm-variable-3, .cm-s-default .cm-type {color: rgb(0, 88, 56);}
 
+.show-check {
+    background-color: rgb(223, 223, 223);
+    padding: 5px;
+}
+
 .output-code {
     font-family: monospace;
     height: 300px;
