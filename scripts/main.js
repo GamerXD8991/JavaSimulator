@@ -450,7 +450,8 @@ function run() {
     termLines[0].clean();
     termLines[1].clean();
     for (let i = 0; i < termLines[0].length; i++) {
-        let currTerm = termLines[0][i].substring(4, termLines[0][i].length);
+        let egPos = termLines[0][i].indexOf("=");
+        let currTerm = termLines[0][i].substring(egPos+1, termLines[0][i].length);
         currTerm = replaceVars(currTerm);
         let rpn = ms.infixToPostfix(currTerm);
         let resLine = ms.eval(rpn);
