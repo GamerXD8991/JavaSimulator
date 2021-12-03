@@ -65,7 +65,7 @@ class MathSolver {
             // ('+', '-' ,'*' , '/')
             // then push the character to the stack
             if (tokens[i] != "+" && tokens[i] != "-"
-                && tokens[i] != "*" && tokens[i] != "/") {
+                && tokens[i] != "*" && tokens[i] != "/"  && tokens[i] != "^") {
                 stack.push(tokens[i]);
                 continue;
             }
@@ -128,14 +128,33 @@ class MathSolver {
                 result = p + value;
                 stack.push(result);
                 break;
- 
+
+            case "^": 
+                x = stack.pop();
+                y = stack.pop();
+                result = null;
+                if (x == y) {
+                    result = false;
+                } else {
+                    result = true;
+                } 
+
+                stack.push(result);
+                break;
+                
             default:
                 continue;
             }
         }
  
         // Method to convert the String to number
-        return parseFloat(stack.pop());
+        var res = stack.pop();
+        if (res !== false) {
+            if (res !== true) {
+                res = parseFloat(res);
+            }
+        }
+        return res;
     }
 
     //https://www.thepolyglotdeveloper.com/2015/03/parse-with-the-shunting-yard-algorithm-using-javascript/
@@ -143,9 +162,9 @@ class MathSolver {
         var outputQueue = "";
         var operatorStack = [];
         var operators = {
-            "^": {
-                precedence: 4,
-                associativity: "Right"
+            "^": {                          //XOR for booleans
+                precedence: 1,
+                associativity: "Left"
             },
             "/": {
                 precedence: 3,
@@ -270,12 +289,12 @@ function findVars(lineArray) {
             let name = line[1];
             if (line.length == 4){  // if 5 or more it's not a varible declaration (new Object() isn't a primitive data type) " e.g. type c = a + b; type c = a+b doesn't exist bc of formating
                 if (Object.is(NaN, Number(line[3]))) { // is line[3] NaN; true if so
-                    if (line[3] == "true"){                  // case: type c = true
-                        varibles.set(line[1], [type, 1]);
+                    if (line[3] == "true" || line[3] == 1){                  // case: type c = true
+                        varibles.set(line[1], [type, true]);
                         continue;
                     }
-                    if (line[3] == "false"){                  // case: type c = false
-                        varibles.set(line[1], [type, 0]);
+                    if (line[3] == "false" || line[3] == 0){                  // case: type c = false
+                        varibles.set(line[1], [type, false]);
                         continue;
                     }
                     let typeVal = varibles.get(line[3])     //case: type c = a
@@ -364,13 +383,18 @@ function checkOverflow(varArray) {
             varArray[1] = modVal(0, 65535, parseFloat(varArray[1]));
             break;
         case "boolean":
-            if (varArray[1] < 0) varArray[1] = 0; // 0 - 1 
-            if (varArray[1] > 1) varArray[1] = 1;  //1 + 1
-            if (varArray[1].toString() == "true") varArray[1] = 1;
-            if (varArray[1].toString() == "false") varArray[1] = 0;
+            //    if (varArray[1] < 0) varArray[1] = 0; // 0 - 1            //not Java compliant behavoiur, shouldn't be needed. 
+            //    if (varArray[1] > 1) varArray[1] = 1;  //1 + 1
+            if ((varArray[1].toString() == "1") || (varArray[1] == true)) {
+                varArray[1] = true;
+            } else if ((varArray[1].toString() == "0")|| (varArray[1] == false)) {
+                varArray[1] = false;
+            } else { varArray[1] = "ERROR: boolean is wrongly defined";} //boolean is not a boolean
             break;
+        
         default:
             addOut("Datatype " + varArray[0] + " not supported. Overflow error may occur!");
+            break;
     }
     return varArray;
 }
