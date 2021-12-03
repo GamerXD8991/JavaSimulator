@@ -65,7 +65,7 @@ class MathSolver {
             // ('+', '-' ,'*' , '/')
             // then push the character to the stack
             if (tokens[i] != "+" && tokens[i] != "-"
-                && tokens[i] != "*" && tokens[i] != "/"  && tokens[i] != "^") {
+                && tokens[i] != "*" && tokens[i] != "/"  && tokens[i] != "^" && tokens[i] != "|" && tokens[i] != "&") {
                 stack.push(tokens[i]);
                 continue;
             }
@@ -141,6 +141,32 @@ class MathSolver {
 
                 stack.push(result);
                 break;
+
+            case "|": 
+                x = stack.pop();
+                y = stack.pop();
+                result = null;
+                if ((x == true) || (y == true)) {
+                    result = true;
+                } else {
+                    result = false;
+                } 
+
+                stack.push(result);
+                break;
+            
+            case "&": 
+                x = stack.pop();
+                y = stack.pop();
+                result = null;
+                if ((x == true) && (y == true)) {
+                    result = true;
+                } else {
+                    result = false;
+                } 
+
+                stack.push(result);
+                break;
                 
             default:
                 continue;
@@ -162,37 +188,45 @@ class MathSolver {
         var outputQueue = "";
         var operatorStack = [];
         var operators = {
-            "^": {                          //XOR for booleans
-                precedence: 1,
-                associativity: "Left"
-            },
             "/": {
-                precedence: 3,
+                precedence: 5,
                 associativity: "Left"
             },
             "*": {
-                precedence: 3,
+                precedence: 5,
                 associativity: "Left"
             },
             "+": {
-                precedence: 2,
+                precedence: 4,
                 associativity: "Left"
             },
             "-": {
+                precedence: 4,
+                associativity: "Left"
+            },
+            "^": {                          //XOR for booleans
+                precedence: 3,
+                associativity: "Left"
+            },
+            "|": {                          //OR for booleans
                 precedence: 2,
                 associativity: "Left"
-            }
+            },
+            "&": {                          //AND for booleans
+                precedence: 1,
+                associativity: "Left"
+            },
         }
         infix = infix.replace(/\s+/g, "");
-        infix = infix.split(/([\+\-\*\/\^\(\)])/).clean();
+        infix = infix.split(/([\+\-\*\/\^\&\|\(\)])/).clean();
         for(var i = 0; i < infix.length; i++) {
             var token = infix[i];
             if(token.isNumeric()) {
                 outputQueue += token + " ";
-            } else if("^*/+-".indexOf(token) !== -1) {
+            } else if("^&|*/+-".indexOf(token) !== -1) {
                 var o1 = token;
                 var o2 = operatorStack[operatorStack.length - 1];
-                while("^*/+-".indexOf(o2) !== -1 && ((operators[o1].associativity === "Left" && operators[o1].precedence <= operators[o2].precedence) || (operators[o1].associativity === "Right" && operators[o1].precedence < operators[o2].precedence))) {
+                while("^&|*/+-".indexOf(o2) !== -1 && ((operators[o1].associativity === "Left" && operators[o1].precedence <= operators[o2].precedence) || (operators[o1].associativity === "Right" && operators[o1].precedence < operators[o2].precedence))) {
                     outputQueue += operatorStack.pop() + " ";
                     o2 = operatorStack[operatorStack.length - 1];
                 }
